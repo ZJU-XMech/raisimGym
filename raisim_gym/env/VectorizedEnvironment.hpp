@@ -28,8 +28,12 @@
 #include "RaisimGymEnv.hpp"
 #include "omp.h"
 #include "yaml-cpp/yaml.h"
+#include "csv_to_eigen.hpp"
+// #include <iostream>
 
 namespace raisim {
+
+constexpr int num_reference_ = 784;
 
 template<class ChildEnvironment>
 class VectorizedEnvironment {
@@ -52,8 +56,18 @@ class VectorizedEnvironment {
     omp_set_num_threads(cfg_["num_threads"].template as<int>());
     num_envs_ = cfg_["num_envs"].template as<int>();
 
+    for (int i = 0; i < num_reference_; ++i)
+    {
+      std::stringstream file_name;
+      file_name << resourceDir_ << "/csv/traj_" << i << ".csv";
+      RSINFO(file_name.str());
+      references_[i].setZero(max_steps, cols);
+      Eigen::load_csv<double>(file_name.str(), references_[i]);
+    }
+
     for (int i = 0; i < num_envs_; i++) {
-      environments_.push_back(new ChildEnvironment(resourceDir_, cfg_, render_ && i == 0));
+      // environments_.push_back(new ChildEnvironment(resourceDir_, cfg_, render_ && i == 0));
+      environments_.push_back(new ChildEnvironment(resourceDir_, cfg_, render_ && i == 0, references_));
       environments_.back()->setSimulationTimeStep(cfg_["simulation_dt"].template as<double>());
       environments_.back()->setControlTimeStep(cfg_["control_dt"].template as<double>());
     }
@@ -206,6 +220,8 @@ class VectorizedEnvironment {
   bool recordVideo_=false, render_=false;
   std::string resourceDir_;
   YAML::Node cfg_;
+
+  std::array<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>, num_reference_> references_;
 };
 
 }
