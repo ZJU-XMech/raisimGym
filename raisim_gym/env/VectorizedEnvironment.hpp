@@ -33,7 +33,7 @@
 
 namespace raisim {
 
-constexpr int num_reference_ = 729;
+constexpr int num_reference_ = 27;
 
 template<class ChildEnvironment>
 class VectorizedEnvironment {
@@ -187,6 +187,21 @@ class VectorizedEnvironment {
     for (auto *env: environments_)
       env->curriculumUpdate();
   };
+
+  void set_reference(int index) {
+    for (auto *env: environments_)
+      env->set_reference(index);
+  }
+
+  void enable_repeat_mode() {
+    for (auto *env: environments_)
+      env->enable_repeat_mode();
+  }
+
+  void disable_repeat_mode() {
+    for (auto *env: environments_)
+      env->disable_repeat_mode();
+  }
 
  private:
 

@@ -34,6 +34,9 @@ PYBIND11_MODULE(_raisim_gym, m) {
     .def("stopRecordingVideo", &VectorizedEnvironment<ENVIRONMENT>::stopRecordingVideo)
     .def("showWindow", &VectorizedEnvironment<ENVIRONMENT>::showWindow)
     .def("hideWindow", &VectorizedEnvironment<ENVIRONMENT>::hideWindow)
+    .def("set_reference", &VectorizedEnvironment<ENVIRONMENT>::set_reference)
+    .def("enable_repeat_mode", &VectorizedEnvironment<ENVIRONMENT>::enable_repeat_mode)
+    .def("disable_repeat_mode", &VectorizedEnvironment<ENVIRONMENT>::disable_repeat_mode)
     .def("curriculumUpdate", &VectorizedEnvironment<ENVIRONMENT>::curriculumUpdate);
 
 }
