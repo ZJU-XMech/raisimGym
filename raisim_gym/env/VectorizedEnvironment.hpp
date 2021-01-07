@@ -39,6 +39,7 @@ class VectorizedEnvironment {
   explicit VectorizedEnvironment(std::string resourceDir, std::string cfg)
       : resourceDir_(resourceDir) {
     cfg_ = YAML::Load(cfg);
+    raisim::World::setActivationKey(raisim::Path(resourceDir + "/activation.raisim").getString());
     if(cfg_["render"])
       render_ = cfg_["render"].template as<bool>();
   }
@@ -173,6 +174,18 @@ class VectorizedEnvironment {
     for (auto *env: environments_)
       env->curriculumUpdate();
   };
+
+  void getExtraDynamicsInfo(Eigen::Ref<EigenRowMajorMat> &info) {
+    environments_[0]->getExtraDynamicsInfo(info.row(0));
+  }
+
+  void getContactInfo(Eigen::Ref<EigenRowMajorMat> &contact) {
+    environments_[0]->getContactInfo(contact.row(0));
+  }
+
+  void setGait(int gait_idx) {
+    environments_[0]->setGait(gait_idx);
+  }
 
  private:
 
